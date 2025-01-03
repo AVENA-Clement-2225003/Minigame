@@ -80,29 +80,18 @@ namespace BUT
         public UnityEvent<bool> OnMovingChange;
         public UnityEvent<bool> OnGroundedChange;
 
+        // Footstep Audio Variables
+        [SerializeField]
+        private AudioSource m_AudioSource; // Drag your AudioSource here in the Inspector
+        [SerializeField]
+        private AudioClip[] m_FootstepSounds; // Array of footstep sounds
+        [SerializeField]
+        private float m_FootstepInterval = 0.5f; // Time interval between footstep sounds
+        private float m_FootstepTimer;
+
         private void Awake()
         {
             m_CharacterController = GetComponent<CharacterController>();
-        }
-
-        public void MovingChanged(bool _moving)
-        {
-            OnMovingChange?.Invoke(_moving);
-        }
-
-        public void SpeedChanged(float _speed)
-        {
-            OnSpeedChange?.Invoke(_speed);
-        }
-
-        public void GroundedChanged(bool _grounded)
-        {
-            OnGroundedChange?.Invoke(_grounded);
-        }
-
-        private void OnDisable()
-        {
-            IsMoving = false;
         }
 
         private void OnEnable()
@@ -120,7 +109,6 @@ namespace BUT
                     {
                         IsMoving = true;
                     }
-                    // clamp input magnitude
                     m_MovementInput = Vector3.ClampMagnitude(m_MovementInput, 1);
                 }
                 else if (IsMoving)
@@ -130,10 +118,34 @@ namespace BUT
 
                 ManageDirection();
                 ManageGravity();
-                if (IsMoving) ApplyRotation();
+                if (IsMoving)
+                {
+                    ApplyRotation();
+                    HandleFootsteps(); // Play footstep sounds
+                }
                 ApplyMovement();
                 yield return new WaitForFixedUpdate();
             }
+        }
+
+        private void HandleFootsteps()
+        {
+            if (!m_CharacterController.isGrounded || !IsMoving) return;
+
+            m_FootstepTimer += Time.deltaTime;
+            if (m_FootstepTimer >= m_FootstepInterval)
+            {
+                m_FootstepTimer = 0;
+                PlayFootstepSound();
+            }
+        }
+
+        private void PlayFootstepSound()
+        {
+            if (m_FootstepSounds.Length == 0 || m_AudioSource == null) return;
+
+            int randomIndex = Random.Range(0, m_FootstepSounds.Length);
+            m_AudioSource.PlayOneShot(m_FootstepSounds[randomIndex]);
         }
 
         public void SetInputMove(InputAction.CallbackContext _context)
@@ -141,44 +153,17 @@ namespace BUT
             m_MovementInput = _context.ReadValue<Vector2>();
         }
 
-        public void SetInputJump(InputAction.CallbackContext _context)
-        {
-            if (!_context.started || (!m_CharacterController.isGrounded && JumpNumber >= m_Movement.MaxJumpNumber)) return;
-            if (JumpNumber == 0) StartCoroutine(WaitForLanding());
-            JumpNumber++;
-
-            if (m_Movement.MinimazeJumpPower) GravityVelocity += m_Movement.JumpPower / JumpNumber;
-            else GravityVelocity += m_Movement.JumpPower;
-        }
-
-        IEnumerator WaitForLanding()
-        {
-            yield return new WaitUntil(() => !m_CharacterController.isGrounded);
-            yield return new WaitUntil(() => m_CharacterController.isGrounded);
-            JumpNumber = 0;
-        }
-
-        public void SetInputSprint(InputAction.CallbackContext _context)
-        {
-            IsSprinting = _context.started || _context.performed;
-        }
-
         private void ManageDirection()
         {
-            // set direction
             m_MovementDirection = new Vector3(m_MovementInput.x, 0, m_MovementInput.y);
-
-            // modify direction according to camera view
             m_MovementDirection = Camera.main.transform.TransformDirection(m_MovementDirection);
             m_MovementDirection.y = transform.forward.y;
-            Debug.DrawRay(transform.position, -transform.up * m_RayLenght, Color.red);
+
             if (Physics.Raycast(transform.position, -transform.up, out m_Hit, m_RayLenght, m_RayMask))
             {
                 IsGrounded = true;
                 float angleOffset = Vector3.SignedAngle(transform.up, m_Hit.normal, transform.right);
                 GroundRotationOffset = Quaternion.AngleAxis(angleOffset, transform.right);
-                Debug.DrawRay(transform.position, GroundRotationOffset * m_MovementDirection, Color.green);
-                //m_MovementDirection = Quaternion.LookRotation(m_Hit.normal) * m_MovementDirection;
             }
             else
             {
@@ -188,9 +173,6 @@ namespace BUT
             m_MovementDirection.Normalize();
 
             Direction = m_MovementDirection;
-            Debug.DrawRay(transform.position, Direction, Color.red);
-
-            // calculate speed according to input force
             CurrentSpeed = ((IsSprinting) ? m_Movement.SprintFactor : 1) * m_Movement.MaxSpeed * m_Movement.SpeedFactor.Evaluate(m_MovementInput.magnitude);
         }
 
@@ -198,17 +180,13 @@ namespace BUT
         {
             if (!IsMoving) return;
 
-            // calculate target rotation
             Quaternion targetRotation = Quaternion.LookRotation(Direction, transform.up);
-            // lerp toward the target rotation
             transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation,
                 m_Movement.MaxAngularSpeed * Mathf.Deg2Rad * m_Movement.AngularSpeedFactor.Evaluate(Direction.magnitude) * Time.deltaTime);
         }
 
         public void ApplyMovement()
         {
-            Debug.DrawRay(transform.position, FullDirection, Color.yellow);
-            // move toward the direction with the current speed
             m_CharacterController.Move(FullDirection * Time.deltaTime);
         }
 
@@ -216,12 +194,10 @@ namespace BUT
         {
             if (m_CharacterController.isGrounded && GravityVelocity < 0.0f)
             {
-                // if grounded set back gravity velocity to a normal number
                 GravityVelocity = -1;
             }
             else
             {
-                // if not grounded add gravity
                 GravityVelocity += GRAVITY * m_Movement.GravityMultiplier * Time.deltaTime;
             }
         }

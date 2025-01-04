@@ -47,13 +47,13 @@ namespace BUT
             else if (other.gameObject.name.Contains("trophee")) // Replace with your prefab's name
             {
                 audioSource.PlayOneShot(audioCollecteTrophee, volume); // Plays part collection sound
-                swordText.text += "Troph� r�cup�r�\n";
+                swordText.text += "Trophée récupéré\n";
                 Destroy(other.gameObject); // Destroy the prefab
             }
             else if (other.gameObject.name.Contains("key")) // Replace with your prefab's name
             {
                 haveKey = true;
-                swordText.text += "Clef r�cup�r�e\n";
+                swordText.text += "Clef récupérée\n";
                 audioSource.PlayOneShot(audioCollecteKey, volume); // Plays part collection sound
                 Destroy(other.gameObject); // Destroy the prefab
             }
@@ -61,7 +61,7 @@ namespace BUT
             {
                 //audioSource.PlayOneShot(audioCollecteKey, volume); // Plays part collection sound
                 // Destroy the prefab
-                deathText.text = "Vous �tes mort"; // Update the text
+                deathText.text = "Vous êtes mort"; // Update the text
                 if (movementScript != null)
                 {
                     movementScript.enabled = false;
@@ -73,7 +73,7 @@ namespace BUT
                 if (haveKey && !haveSword)
                 {
                     haveSword = true;
-                    swordText.text += "�p�e �quip�e\n";
+                    swordText.text += "Épée équipée\n";
                 }
             }
             else if (other.gameObject.name.Contains("enemy")) // Replace with your prefab's name
@@ -81,7 +81,7 @@ namespace BUT
                 if (haveSword) Destroy(other.gameObject);
                 else
                 {
-                    deathText.text = "Vous �tes mort"; // Update the text
+                    deathText.text = "Vous êtes mort"; // Update the text
                     if (movementScript != null)
                     {
                         movementScript.enabled = false;

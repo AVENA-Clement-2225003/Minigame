@@ -89,6 +89,15 @@ namespace BUT
         private float m_FootstepInterval = 0.5f; // Time interval between footstep sounds
         private float m_FootstepTimer;
 
+        [SerializeField]
+        private ParticleSystem footstepParticles; // Référence au système de particules
+
+        [SerializeField]
+        private float particleInterval = 0.5f; // Intervalle entre les particules
+
+        private float particleTimer = 0; // Chronomètre pour les particules
+
+
         private void Awake()
         {
             m_CharacterController = GetComponent<CharacterController>();
@@ -100,33 +109,34 @@ namespace BUT
         }
 
         IEnumerator Moving()
+{
+    while (enabled)
+    {
+        if (m_MovementInput.magnitude > 0.1f)
         {
-            while (enabled)
+            if (!IsMoving)
             {
-                if (m_MovementInput.magnitude > 0.1f)
-                {
-                    if (!IsMoving)
-                    {
-                        IsMoving = true;
-                    }
-                    m_MovementInput = Vector3.ClampMagnitude(m_MovementInput, 1);
-                }
-                else if (IsMoving)
-                {
-                    IsMoving = false;
-                }
-
-                ManageDirection();
-                ManageGravity();
-                if (IsMoving)
-                {
-                    ApplyRotation();
-                    HandleFootsteps(); // Play footstep sounds
-                }
-                ApplyMovement();
-                yield return new WaitForFixedUpdate();
+                IsMoving = true;
             }
         }
+        else if (IsMoving)
+        {
+            IsMoving = false;
+        }
+
+        if (IsMoving)
+        {
+            HandleFootsteps(); // Gestion des sons
+            HandleFootstepParticles(); // Gestion des particules
+        }
+
+        ManageDirection();
+        ManageGravity();
+        if (IsMoving) ApplyRotation();
+        ApplyMovement();
+        yield return new WaitForFixedUpdate();
+    }
+}
 
         private void HandleFootsteps()
         {
@@ -201,5 +211,23 @@ namespace BUT
                 GravityVelocity += GRAVITY * m_Movement.GravityMultiplier * Time.deltaTime;
             }
         }
+
+        private void HandleFootstepParticles()
+        {
+            if (!m_CharacterController.isGrounded || !IsMoving || footstepParticles == null) return;
+
+                particleTimer += Time.deltaTime;
+            if (particleTimer >= particleInterval)
+                {
+                    particleTimer = 0;
+                    EmitFootstepParticles();
+                }
+        }
+
+        private void EmitFootstepParticles()
+        {
+            footstepParticles.Play(); // Active le système de particules
+        }
+
     }
 }

@@ -244,6 +244,20 @@ CapsuleCollider:
   m_Height: 9.786594
   m_Direction: 1
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &106327520
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 106327517}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ef91a6a77c3119443a2239bd26a40682, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_SpeedRotation: {x: 0, y: 360, z: 0}
+  m_RandomSpeedRotation: {x: 0, y: 0, z: 0}
 --- !u!1 &124085882
 GameObject:
   m_ObjectHideFlags: 0
@@ -3425,7 +3439,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: f55a47f730b29d5439d9b4c88c79c885, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -21.6
+      value: -21.4
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: f55a47f730b29d5439d9b4c88c79c885, type: 3}
       propertyPath: m_LocalPosition.y
@@ -3433,7 +3447,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: f55a47f730b29d5439d9b4c88c79c885, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -38.73
+      value: -38.44
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: f55a47f730b29d5439d9b4c88c79c885, type: 3}
       propertyPath: m_LocalRotation.w
@@ -3474,6 +3488,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: f55a47f730b29d5439d9b4c88c79c885, type: 3}
       insertIndex: -1
       addedObject: {fileID: 106327519}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: f55a47f730b29d5439d9b4c88c79c885, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 106327520}
   m_SourcePrefab: {fileID: 100100000, guid: f55a47f730b29d5439d9b4c88c79c885, type: 3}
 --- !u!1001 &1376439325
 PrefabInstance:

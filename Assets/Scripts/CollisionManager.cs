@@ -9,6 +9,7 @@ namespace BUT
         [SerializeField] private AudioClip audioCollecteCoin = null;
         [SerializeField] private AudioClip audioCollecteTrophee = null;
         [SerializeField] private AudioClip audioCollecteKey = null;
+        [SerializeField] private AudioClip audioTakeTeleport = null;
         [SerializeField] private float volume = 1.0f; // Ajout d'une variable pour le volume
         [SerializeField] private Transform respawnPoint;
         [SerializeField] private PlayerMovement movementScript;
@@ -46,13 +47,13 @@ namespace BUT
             else if (other.gameObject.name.Contains("trophee")) // Replace with your prefab's name
             {
                 audioSource.PlayOneShot(audioCollecteTrophee, volume); // Plays part collection sound
-                swordText.text += "Trophé récupéré\n";
+                swordText.text += "Trophï¿½ rï¿½cupï¿½rï¿½\n";
                 Destroy(other.gameObject); // Destroy the prefab
             }
             else if (other.gameObject.name.Contains("key")) // Replace with your prefab's name
             {
                 haveKey = true;
-                swordText.text += "Clef récupérée\n";
+                swordText.text += "Clef rï¿½cupï¿½rï¿½e\n";
                 audioSource.PlayOneShot(audioCollecteKey, volume); // Plays part collection sound
                 Destroy(other.gameObject); // Destroy the prefab
             }
@@ -60,7 +61,7 @@ namespace BUT
             {
                 //audioSource.PlayOneShot(audioCollecteKey, volume); // Plays part collection sound
                 // Destroy the prefab
-                deathText.text = "Vous êtes mort"; // Update the text
+                deathText.text = "Vous ï¿½tes mort"; // Update the text
                 if (movementScript != null)
                 {
                     movementScript.enabled = false;
@@ -72,7 +73,7 @@ namespace BUT
                 if (haveKey && !haveSword)
                 {
                     haveSword = true;
-                    swordText.text += "Épée équipée\n";
+                    swordText.text += "ï¿½pï¿½e ï¿½quipï¿½e\n";
                 }
             }
             else if (other.gameObject.name.Contains("enemy")) // Replace with your prefab's name
@@ -80,13 +81,17 @@ namespace BUT
                 if (haveSword) Destroy(other.gameObject);
                 else
                 {
-                    deathText.text = "Vous êtes mort"; // Update the text
+                    deathText.text = "Vous ï¿½tes mort"; // Update the text
                     if (movementScript != null)
                     {
                         movementScript.enabled = false;
                     }
                     Invoke(nameof(Respawn), 3f);
                 }
+            }
+            else if (other.gameObject.name.Contains("teleport")) // Replace with your prefab's name
+            {
+                audioSource.PlayOneShot(audioTakeTeleport, volume); // Plays part teleport sound
             }
         }
 

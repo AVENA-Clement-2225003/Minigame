@@ -9,6 +9,7 @@ public class CollisionCounterTMP : MonoBehaviour
     [SerializeField] private float volume = 1.0f; // Ajout d'une variable pour le volume
 
     public TextMeshProUGUI counterText; // Reference to the TextMeshProUGUI component
+    public TextMeshProUGUI deathText;
     private int counter = 0; // Initialize the counter
     private AudioSource audioSource; // Init AudioSource
 
@@ -43,6 +44,12 @@ public class CollisionCounterTMP : MonoBehaviour
         {
             audioSource.PlayOneShot(audioCollecteKey, volume); // Plays part collection sound
             Destroy(other.gameObject); // Destroy the prefab
+        }
+        else if (other.gameObject.name.Contains("Water")) // Replace with your prefab's name
+        {
+            //audioSource.PlayOneShot(audioCollecteKey, volume); // Plays part collection sound
+            // Destroy the prefab
+            deathText.text = "Vous êtes mort"; // Update the text
         }
     }
 }

@@ -52,6 +52,10 @@ namespace BUT
                 audioSource.PlayOneShot(audioCollecteTrophee, volume); // Plays part collection sound
                 swordText.text += "Trophée récupéré\n";
                 Destroy(other.gameObject); // Destroy the prefab
+                deathText.text = "Vous avez gagné !"; // Update le texte
+                if (movementScript != null) movementScript.enabled = false;
+
+                if (respawnMenu != null) respawnMenu.SetActive(true); // Affiche le menu
             }
             else if (other.gameObject.name.Contains("key")) // Replace with your prefab's name
             {

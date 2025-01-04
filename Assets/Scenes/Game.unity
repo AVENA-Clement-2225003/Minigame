@@ -3668,6 +3668,8 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 51b26a6ed69950b4dbf6cb63cef295d0, type: 3}
   - {fileID: 8300000, guid: 5bdc688381096e54ea1e92cd9244b173, type: 3}
   m_FootstepInterval: 0.45
+  footstepParticles: {fileID: 0}
+  particleInterval: 0.5
 --- !u!143 &1667118512
 CharacterController:
   m_ObjectHideFlags: 0

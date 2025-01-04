@@ -14,7 +14,10 @@ namespace BUT
         [SerializeField] private PlayerMovement movementScript;
         [SerializeField] private TextMeshProUGUI counterText; // Reference to the TextMeshProUGUI component
         [SerializeField] private TextMeshProUGUI deathText;
+        [SerializeField] private TextMeshProUGUI swordText;
 
+        private bool haveSword = false;
+        private bool haveKey = false;
         private int counter = 0; // Initialize the counter
         private AudioSource audioSource; // Init AudioSource
 
@@ -43,10 +46,13 @@ namespace BUT
             else if (other.gameObject.name.Contains("trophee")) // Replace with your prefab's name
             {
                 audioSource.PlayOneShot(audioCollecteTrophee, volume); // Plays part collection sound
+                swordText.text += "Trophé récupéré\n";
                 Destroy(other.gameObject); // Destroy the prefab
             }
             else if (other.gameObject.name.Contains("key")) // Replace with your prefab's name
             {
+                haveKey = true;
+                swordText.text += "Clef récupérée\n";
                 audioSource.PlayOneShot(audioCollecteKey, volume); // Plays part collection sound
                 Destroy(other.gameObject); // Destroy the prefab
             }
@@ -60,6 +66,27 @@ namespace BUT
                     movementScript.enabled = false;
                 }
                 Invoke(nameof(Respawn), 3f);
+            }
+            else if (other.gameObject.name.Contains("chest")) // Replace with your prefab's name
+            {
+                if (haveKey && !haveSword)
+                {
+                    haveSword = true;
+                    swordText.text += "Épée équipée\n";
+                }
+            }
+            else if (other.gameObject.name.Contains("enemy")) // Replace with your prefab's name
+            {
+                if (haveSword) Destroy(other.gameObject);
+                else
+                {
+                    deathText.text = "Vous êtes mort"; // Update the text
+                    if (movementScript != null)
+                    {
+                        movementScript.enabled = false;
+                    }
+                    Invoke(nameof(Respawn), 3f);
+                }
             }
         }
 

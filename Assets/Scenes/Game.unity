@@ -3445,6 +3445,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   audioCollecteCoin: {fileID: 8300000, guid: b6baed89c25976542a6c0154ca4494f2, type: 3}
+  audioCollecteTrophee: {fileID: 8300000, guid: 1a1365cdacedcc948a21d018b631786b, type: 3}
+  audioCollecteKey: {fileID: 8300000, guid: c03babd9a262391428822bed75eace46, type: 3}
   volume: 0.25
   counterText: {fileID: 683434508}
 --- !u!1 &1762830542 stripped

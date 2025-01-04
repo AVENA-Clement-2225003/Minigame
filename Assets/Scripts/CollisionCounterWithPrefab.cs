@@ -4,6 +4,8 @@ using TMPro;
 public class CollisionCounterTMP : MonoBehaviour
 {
     [SerializeField] private AudioClip audioCollecteCoin = null;
+    [SerializeField] private AudioClip audioCollecteTrophee = null;
+    [SerializeField] private AudioClip audioCollecteKey = null;
     [SerializeField] private float volume = 1.0f; // Ajout d'une variable pour le volume
 
     public TextMeshProUGUI counterText; // Reference to the TextMeshProUGUI component
@@ -30,6 +32,16 @@ public class CollisionCounterTMP : MonoBehaviour
             counter++; // Increment the counter
             counterText.text = counter + "/6 coins" ; // Update the text
             audioSource.PlayOneShot(audioCollecteCoin, volume); // Plays part collection sound
+            Destroy(other.gameObject); // Destroy the prefab
+        }
+        else if (other.gameObject.name.Contains("trophee")) // Replace with your prefab's name
+        {
+            audioSource.PlayOneShot(audioCollecteTrophee, volume); // Plays part collection sound
+            Destroy(other.gameObject); // Destroy the prefab
+        }
+        else if (other.gameObject.name.Contains("key")) // Replace with your prefab's name
+        {
+            audioSource.PlayOneShot(audioCollecteKey, volume); // Plays part collection sound
             Destroy(other.gameObject); // Destroy the prefab
         }
     }

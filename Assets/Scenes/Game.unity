@@ -9158,6 +9158,7 @@ MonoBehaviour:
   audioCollecteCoin: {fileID: 8300000, guid: b6baed89c25976542a6c0154ca4494f2, type: 3}
   audioCollecteTrophee: {fileID: 8300000, guid: 1a1365cdacedcc948a21d018b631786b, type: 3}
   audioCollecteKey: {fileID: 8300000, guid: c03babd9a262391428822bed75eace46, type: 3}
+  audioTakeTeleport: {fileID: 8300000, guid: 8cbe110a9a294de4694ab04174f5d59f, type: 3}
   volume: 0.25
   respawnPoint: {fileID: 228213693}
   movementScript: {fileID: 1667118511}

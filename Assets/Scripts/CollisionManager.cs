@@ -9,19 +9,20 @@ namespace BUT
         [SerializeField] private AudioClip audioCollecteCoin = null;
         [SerializeField] private AudioClip audioCollecteTrophee = null;
         [SerializeField] private AudioClip audioCollecteKey = null;
-        [SerializeField] private float volume = 1.0f; // Ajout d'une variable pour le volume
-        [SerializeField] private Transform respawnPoint;
+        [SerializeField] private AudioClip audioTakeTeleport = null;
+        [SerializeField] private float volume = 1.0f; // Volume du son
         [SerializeField] private PlayerMovement movementScript;
-        [SerializeField] private TextMeshProUGUI counterText; // Reference to the TextMeshProUGUI component
+        [SerializeField] private TextMeshProUGUI counterText;
         [SerializeField] private TextMeshProUGUI deathText;
         [SerializeField] private TextMeshProUGUI swordText;
+        [SerializeField] private GameObject respawnMenu; // RÃ©fÃ©rence au menu de respawn
 
         private bool haveSword = false;
         private bool haveKey = false;
-        private int counter = 0; // Initialize the counter
-        private AudioSource audioSource; // Init AudioSource
+        private int counter = 0;
+        private AudioSource audioSource;
 
-        void Start()
+         void Start()
         {
             // Attach an AudioSource component if not already present
             audioSource = GetComponent<AudioSource>();
@@ -30,6 +31,9 @@ namespace BUT
                 audioSource = gameObject.AddComponent<AudioSource>();
             }
             audioSource.volume = volume; // Initialize sound volume
+            
+            // Hide Menu
+            if (respawnMenu != null) respawnMenu.SetActive(false);
         }
 
         void OnTriggerEnter(Collider other)
@@ -46,33 +50,33 @@ namespace BUT
             else if (other.gameObject.name.Contains("trophee")) // Replace with your prefab's name
             {
                 audioSource.PlayOneShot(audioCollecteTrophee, volume); // Plays part collection sound
-                swordText.text += "Trophé récupéré\n";
+                swordText.text += "TrophÃ©e rÃ©cupÃ©rÃ©\n";
                 Destroy(other.gameObject); // Destroy the prefab
+                deathText.text = "Vous avez gagnÃ© !"; // Update le texte
+                if (movementScript != null) movementScript.enabled = false;
+
+                if (respawnMenu != null) respawnMenu.SetActive(true); // Affiche le menu
             }
             else if (other.gameObject.name.Contains("key")) // Replace with your prefab's name
             {
                 haveKey = true;
-                swordText.text += "Clef récupérée\n";
+                swordText.text += "Clef rÃ©cupÃ©rÃ©e\n";
                 audioSource.PlayOneShot(audioCollecteKey, volume); // Plays part collection sound
                 Destroy(other.gameObject); // Destroy the prefab
             }
-            else if (other.gameObject.name.Contains("Water")) // Replace with your prefab's name
+             else if (other.gameObject.name.Contains("Water"))
             {
-                //audioSource.PlayOneShot(audioCollecteKey, volume); // Plays part collection sound
-                // Destroy the prefab
-                deathText.text = "Vous êtes mort"; // Update the text
-                if (movementScript != null)
-                {
-                    movementScript.enabled = false;
-                }
-                Invoke(nameof(Respawn), 3f);
+                deathText.text = "Vous Ãªtes mort"; // Update le texte
+                if (movementScript != null) movementScript.enabled = false;
+
+                if (respawnMenu != null) respawnMenu.SetActive(true); // Affiche le menu
             }
             else if (other.gameObject.name.Contains("chest")) // Replace with your prefab's name
             {
                 if (haveKey && !haveSword)
                 {
                     haveSword = true;
-                    swordText.text += "Épée équipée\n";
+                    swordText.text += "Ã‰pÃ©e Ã©quipÃ©e\n";
                 }
             }
             else if (other.gameObject.name.Contains("enemy")) // Replace with your prefab's name
@@ -80,29 +84,29 @@ namespace BUT
                 if (haveSword) Destroy(other.gameObject);
                 else
                 {
-                    deathText.text = "Vous êtes mort"; // Update the text
-                    if (movementScript != null)
-                    {
-                        movementScript.enabled = false;
-                    }
-                    Invoke(nameof(Respawn), 3f);
+                    
+                    deathText.text = "Vous Ãªtes mort"; // Update le texte
+                    if (movementScript != null) movementScript.enabled = false;
+
+                    if (respawnMenu != null) respawnMenu.SetActive(true); // Affiche le menu
                 }
+            }
+            else if (other.gameObject.name.Contains("teleport")) // Replace with your prefab's name
+            {
+                audioSource.PlayOneShot(audioTakeTeleport, volume); // Plays part teleport sound
             }
         }
 
-        void Respawn()
+        public void RestartGame()
         {
-            Debug.Log("Respawning player!");
-
-            // Reset player position
-            transform.position = respawnPoint.position;
-            deathText.text = "";
-            // Re-enable the movement script
-            if (movementScript != null)
-            {
-                movementScript.enabled = true;
-            }
+            Debug.Log("Restarting game!");
             SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        }
+
+        public void QuitGame()
+        {
+            Debug.Log("Quitting game!");
+            Application.Quit();
         }
     }
 }
